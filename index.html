@@ -79,7 +79,7 @@ footer a{color:var(--muted)}
 
   <div class="stats">
     <div class="stat keep"><b id="sKeep">71</b><span>permaneceram</span></div>
-    <div class="stat out"><b id="sOut">30</b><span>saíram</span></div>
+    <div class="stat out"><b id="sOut">31</b><span>saíram</span></div>
     <div class="stat new"><b id="sNew">29</b><span>entraram</span></div>
   </div>
 
@@ -106,7 +106,7 @@ footer a{color:var(--muted)}
 
   <footer>
     <span>Fontes: <a href="https://abraccine.org/2015/11/27/abraccine-organiza-ranking-dos-100-melhores-filmes-brasileiros/">ranking de 2015 (abraccine.org)</a> · <a href="https://abraccine.org/2026/05/11/abraccine-elege-100-filmes-brasileiros-essenciais/">lista de 2026 (abraccine.org)</a></span>
-    <span>Ranking de 2015 na versão divulgada em 27/11/2015, com o empate em 100º (*). A recontagem posterior colocou O Palhaço (2011) em 97º (**), mostrado no fim da lista sem alterar a numeração nem as contagens.</span>
+    <span>Ranking de 2015 na versão divulgada em 27/11/2015, com o empate em 100º (*). A recontagem posterior colocou O Palhaço (2011) em 97º (**), mostrado no fim da lista sem alterar a numeração; ele entra nas contagens e na aba Diretores.</span>
   </footer>
 </div>
 
@@ -123,7 +123,7 @@ const rows15=L15.map((r,i)=>({n:i+1,t:r[0],y:r[1],d:r[2],s:kept.has(i+1)?"keep":
   .concat(REC.map(r=>({n:r[3],rc:true,t:r[0],y:r[1],d:r[2],s:"out"})));
 const entered=L26.filter(r=>!r[3]).map(r=>({n:null,t:r[0],y:r[1],d:r[2],s:"new"}));
 document.getElementById("sKeep").textContent=kept.size;
-document.getElementById("sOut").textContent=L15.length-kept.size;
+document.getElementById("sOut").textContent=rows15.length-kept.size;
 document.getElementById("sNew").textContent=entered.length;
 
 const LBL={keep:"Permaneceu",out:"Saiu",new:"Entrou"};
@@ -133,10 +133,10 @@ let view="cmp";
 try{const v=localStorage.getItem("abr-view");if(v)view=v}catch(e){}
 
 const NOTES={
-  cmp:"Os 101 filmes de 2015 na ordem do ranking original, com a situação de cada um em 2026. Os 29 que entraram aparecem no fim, em ordem cronológica. ** O Palhaço entrou em 97º na recontagem dos votos, que tirou Guerra Conjugal e Bar Esperança do ranking; não entra nas contagens.",
+  cmp:"Os 101 filmes de 2015 na ordem do ranking original, mais O Palhaço (**), com a situação de cada um em 2026. Os 29 que entraram aparecem no fim, em ordem cronológica. ** O Palhaço entrou em 97º na recontagem dos votos, que tirou Guerra Conjugal e Bar Esperança do ranking; ele conta nos números e nos diretores.",
   l15:"Ranking de 2015, do 1º ao 101º (* Guerra Conjugal e Bar Esperança empataram em 100º). ** O Palhaço entrou em 97º na recontagem dos votos; com isso, os seguintes desceram uma posição e os dois empatados em 100º saíram.",
   l26:"Lista de 2026 na ordem publicada pela Abraccine (cronológica, sem classificação). A coluna 2015 mostra a posição que o filme tinha no ranking anterior.",
-  dir:"Quantos títulos cada diretor tinha em 2015 e quantos tem em 2026. Filmes de codireção contam para cada um dos diretores. Ordenado pelo maior número de títulos em qualquer das duas listas."
+  dir:"Quantos títulos cada diretor tinha em 2015 (incluindo O Palhaço, que entrou na recontagem) e quantos tem em 2026. Filmes de codireção contam para cada um dos diretores. Ordenado pelo maior número de títulos em qualquer das duas listas."
 };
 
 // Diretores: separa codireções e unifica grafias diferentes entre as listas
@@ -144,7 +144,7 @@ const dkey=n=>norm(n).replace(/\bluis\b/g,"luiz").replace(/\bsergio\b/g,"sergio"
 const splitD=d=>d.split(/\s+e\s+|,\s*/).map(s=>s.trim()).filter(Boolean);
 const DIRS=(()=>{const m=new Map();
   const add=(d,col,disp)=>splitD(d).forEach(n=>{const k=dkey(n);if(!m.has(k))m.set(k,{name:n,a:0,b:0});const o=m.get(k);o[col]++;if(disp)o.name=n});
-  L15.forEach(r=>add(r[2],"a",false));
+  L15.concat(REC).forEach(r=>add(r[2],"a",false));
   L26.forEach(r=>add(r[2],"b",true));
   return [...m.values()].sort((x,y)=>Math.max(y.a,y.b)-Math.max(x.a,x.b)||y.a-x.a||x.name.localeCompare(y.name,"pt"));
 })();
