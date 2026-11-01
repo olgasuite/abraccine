@@ -65,6 +65,32 @@ tr.section td{background:var(--bg);font:600 12px var(--f-mono);letter-spacing:.0
 tr.is-out td.t{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--out)}
 footer{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
 footer a{color:var(--muted)}
+.tl{all:unset;cursor:pointer;font-weight:500;border-radius:2px}
+.tl:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.tl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* Ficha do filme */
+dialog{border:1px solid var(--line);border-radius:8px;padding:0;background:var(--surface);color:var(--fg);width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+.fx-banner{position:relative;aspect-ratio:16/7;background:var(--line) center/cover no-repeat}
+.fx-close{position:sticky;top:0;float:right;margin:10px;z-index:2;font:600 18px var(--f-body);width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.fx-body{padding:20px 22px 24px;display:flex;flex-direction:column;gap:18px}
+.fx-head{display:flex;gap:18px;align-items:flex-start}
+.fx-head img{width:120px;border-radius:4px;border:1px solid var(--line);flex:none}
+.fx-head h2{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,5vw,40px);line-height:1;margin:0 0 6px;text-transform:uppercase;text-wrap:balance}
+.fx-meta{color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:6px}
+.fx-meta .pill{margin-right:4px}
+.fx-sec h3{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.fx-sec p{margin:0}
+.fx-src{font-size:12px;color:var(--muted)}
+.fx-dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;font-size:14px}
+.fx-dl dt{color:var(--muted)} .fx-dl dd{margin:0}
+.fx-cast{margin:0;padding:0;list-style:none;columns:2;column-gap:20px;font-size:14px}
+.fx-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.fx-gal a{display:block;aspect-ratio:16/9;background:var(--line) center/cover no-repeat;border-radius:3px}
+.fx-links{display:flex;gap:16px;flex-wrap:wrap;font-size:14px}
+.fx-links a{color:var(--accent)}
+.fx-empty{color:var(--muted);font-size:14px}
+@media (max-width:560px){.fx-head img{width:84px}.fx-cast{columns:1}.fx-dl{grid-template-columns:1fr}.fx-dl dt{margin-top:6px}}
 @media (max-width:560px){.stats{grid-template-columns:1fr 1fr 1fr}.stat b{font-size:28px}td.d,th.d{display:none}input{width:100%}.filters{width:100%}}
 </style>
 </head>
@@ -104,7 +130,10 @@ footer a{color:var(--muted)}
   <p class="note" id="note"></p>
   <div class="tbl"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
 
+  <dialog id="fx" aria-labelledby="fxTitle"><button class="fx-close" id="fxClose" aria-label="Fechar">×</button><div id="fxIn"></div></dialog>
+
   <footer>
+    <span>Clique no nome de um filme para ver a ficha, com dados da <a href="https://bases.cinemateca.org.br/cgi-bin/wxis.exe/iah/?IsisScript=iah/iah.xis&amp;base=FILMOGRAFIA&amp;lang=p">Filmografia Brasileira (Cinemateca Brasileira)</a> e imagens do <a href="https://www.themoviedb.org/">TMDB</a>.</span>
     <span>Fontes: <a href="https://abraccine.org/2015/11/27/abraccine-organiza-ranking-dos-100-melhores-filmes-brasileiros/">ranking de 2015 (abraccine.org)</a> · <a href="https://abraccine.org/2026/05/11/abraccine-elege-100-filmes-brasileiros-essenciais/">lista de 2026 (abraccine.org)</a></span>
     <span>Ranking de 2015 na versão divulgada em 27/11/2015, com o empate em 100º (*). A recontagem posterior colocou O Palhaço (2011) em 97º (**), mostrado no fim da lista sem alterar a numeração; ele entra nas contagens e na aba Diretores.</span>
   </footer>
@@ -121,12 +150,14 @@ const REC=[["O Palhaço",2011,"Selton Mello",97]];
 const kept=new Set(L26.filter(r=>r[3]).map(r=>r[3]));
 const rows15=L15.map((r,i)=>({n:i+1,t:r[0],y:r[1],d:r[2],s:kept.has(i+1)?"keep":"out"}))
   .concat(REC.map(r=>({n:r[3],rc:true,t:r[0],y:r[1],d:r[2],s:"out"})));
-const entered=L26.filter(r=>!r[3]).map(r=>({n:null,t:r[0],y:r[1],d:r[2],s:"new"}));
+const entered=L26.map((r,i)=>({n:null,i:i+1,t:r[0],y:r[1],d:r[2],s:"new",x:r[3]})).filter(r=>!r.x);
 document.getElementById("sKeep").textContent=kept.size;
 document.getElementById("sOut").textContent=rows15.length-kept.size;
 document.getElementById("sNew").textContent=entered.length;
 
 const LBL={keep:"Permaneceu",out:"Saiu",new:"Entrou"};
+// chave da ficha: p<posição 2015>, r<posição na recontagem>, n<índice na lista 2026>
+const fkey=r=>r.rc?"r"+r.n:r.n?"p"+r.n:"n"+r.i;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 let view="cmp";
@@ -155,7 +186,7 @@ const rank15=n=>n?(n===101?"100º*":n+"º"):"—";
 const deltaPill=dv=>`<span class="pill ${dv>0?"new":dv<0?"out":"keep"}">${dv>0?"+"+dv:dv<0?"−"+(-dv):"="}</span>`;
 const C={
   r15:{label:"2015",cls:"n",v:r=>r.rc?r.n+.5:r.n,h:r=>r.rc?r.n+"º**":rank15(r.n)},
-  t:{label:"Filme",cls:"t",v:r=>r.t,h:r=>esc(r.t)},
+  t:{label:"Filme",cls:"t",v:r=>r.t,h:r=>`<button class="tl" data-f="${fkey(r)}">${esc(r.t)}</button>`},
   y:{label:"Ano",cls:"n",v:r=>r.y,h:r=>r.y},
   d:{label:"Direção",cls:"d",v:r=>r.d,h:r=>esc(r.d)},
   s:{label:"Situação",cls:"",v:r=>SORD[r.s],h:r=>pill(r.s)},
@@ -204,6 +235,55 @@ document.getElementById("thead").addEventListener("click",e=>{const b=e.target.c
   else sort={k:null,dir:1};
   render()});
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{view=b.dataset.view;sort={k:null,dir:1};try{localStorage.setItem("abr-view",view)}catch(e){}render()}));
+// Ficha do filme: dados de fichas.json (gerado por fichas.py a partir da Filmografia Brasileira e do TMDB)
+let FICHAS=null;
+const fichasP=fetch("fichas.json").then(r=>r.ok?r.json():{}).catch(()=>({})).then(j=>FICHAS=j);
+const FILMES=new Map();
+rows15.concat(entered,rows26).forEach(r=>{const k=fkey(r);if(!FILMES.has(k))FILMES.set(k,r)});
+const fxDlg=document.getElementById("fx");
+const ul=a=>a.map(x=>`<li>${esc(x)}</li>`).join("");
+function fichaHTML(k){
+  const r=FILMES.get(k),f=FICHAS[k]||{},c=f.cin||{},t=f.tmdb||{};
+  const r26=rows26.find(x=>fkey(x)===k);
+  const pos=[];
+  if(r.rc)pos.push(`Entrou em ${r.n}º na recontagem de 2015`);
+  else if(r.n)pos.push(`${rank15(r.n)} em 2015`);
+  pos.push(r26?"Está na lista de 2026":"Não está na lista de 2026");
+  const dur=c.duracao||t.duracao;
+  const info=[r.y,r.d,dur?dur+" min":null,c.categoria,c.genero,c.local].filter(Boolean).map(esc).join(" · ");
+  const sin=c.sinopse||t.sinopse;
+  const sinSrc=c.sinopse?"Filmografia Brasileira":"TMDB";
+  const eq=(c.equipe||[]).map(([a,b])=>`<dt>${esc(a)}</dt><dd>${esc(b.join(", "))}</dd>`).join("");
+  const el=(c.elenco&&c.elenco.length?c.elenco:t.elenco)||[];
+  const elSrc=c.elenco&&c.elenco.length?"Filmografia Brasileira":"TMDB";
+  const fotos=(t.fotos||[]).map(p=>`<a href="https://image.tmdb.org/t/p/original${p}" target="_blank" rel="noopener" style="background-image:url('https://image.tmdb.org/t/p/w300${p}')" aria-label="Foto do filme"></a>`).join("");
+  const links=[c.url?`<a href="${esc(c.url)}" target="_blank" rel="noopener">Ficha na Filmografia Brasileira ↗</a>`:"",
+    t.url?`<a href="${esc(t.url)}" target="_blank" rel="noopener">TMDB ↗</a>`:""].join("");
+  return (t.foto?`<div class="fx-banner" style="background-image:url('${esc(t.foto)}')"></div>`:"")+
+  `<div class="fx-body">
+    <div class="fx-head">${t.poster?`<img src="${esc(t.poster)}" alt="Cartaz de ${esc(r.t)}" loading="lazy">`:""}
+      <div><h2 id="fxTitle">${esc(r.t)}</h2><div class="fx-meta"><span>${info}</span>
+        <span>${pill(r.s)} ${esc(pos.join(" · "))}</span>
+        ${t.titulo_original&&norm(t.titulo_original)!==norm(r.t)?`<span>Título no TMDB: ${esc(t.titulo_original)}</span>`:""}</div></div></div>
+    ${sin?`<div class="fx-sec"><h3>Sinopse</h3><p>${esc(sin)}</p><span class="fx-src">Fonte: ${sinSrc}</span></div>`:""}
+    ${eq?`<div class="fx-sec"><h3>Equipe</h3><dl class="fx-dl">${eq}</dl></div>`:""}
+    ${el.length?`<div class="fx-sec"><h3>Elenco</h3><ul class="fx-cast">${ul(el)}</ul><span class="fx-src">Fonte: ${elSrc}</span></div>`:""}
+    ${c.premios&&c.premios.length?`<div class="fx-sec"><h3>Prêmios</h3><ul class="fx-cast" style="columns:1">${ul(c.premios)}</ul></div>`:""}
+    ${fotos?`<div class="fx-sec"><h3>Fotos</h3><div class="fx-gal">${fotos}</div><span class="fx-src">Fonte: TMDB</span></div>`:""}
+    ${!f.cin&&!f.tmdb?`<p class="fx-empty">Ainda não há ficha deste filme na Filmografia Brasileira nem no TMDB.</p>`:""}
+    ${links?`<div class="fx-links">${links}</div>`:""}
+  </div>`;
+}
+async function abrirFicha(k){
+  if(!FICHAS)await fichasP;
+  document.getElementById("fxIn").innerHTML=fichaHTML(k);
+  fxDlg.scrollTop=0;
+  if(!fxDlg.open)fxDlg.showModal();
+}
+document.getElementById("tbody").addEventListener("click",e=>{const b=e.target.closest(".tl");if(b)abrirFicha(b.dataset.f)});
+document.getElementById("fxClose").addEventListener("click",()=>fxDlg.close());
+fxDlg.addEventListener("click",e=>{if(e.target===fxDlg)fxDlg.close()});
+
 document.getElementById("q").addEventListener("input",render);
 document.getElementById("st").addEventListener("change",render);
 render();
