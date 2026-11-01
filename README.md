@@ -18,6 +18,8 @@ Página publicada em: https://olgasuite.github.io/abraccine
 
 Todas as colunas podem ser ordenadas com um clique no título (1º clique ordena, 2º inverte, 3º volta à ordem original). Há busca por filme ou diretor e filtro por situação.
 
+Clicar no nome de um filme abre a **ficha**: cartaz, foto, sinopse, equipe, elenco, prêmios, galeria de fotos e links para a Filmografia Brasileira e o TMDB. Os dados de texto vêm de preferência da Filmografia Brasileira (Cinemateca Brasileira); cartaz e fotos vêm do TMDB. *Santiago*, *Aquarius*, *Arábia* e *O Agente Secreto* ainda não têm registro na Filmografia e mostram só os dados do TMDB.
+
 ## Números
 
 - 71 filmes permaneceram
@@ -41,3 +43,6 @@ Como a lista de 2026 não é um ranking, não há como medir quantas posições 
 ## Arquivos
 
 - `index.html` — página única, sem dependências além das fontes do Google Fonts. Os dados das duas listas estão embutidos no próprio arquivo.
+- `fichas.json` — fichas dos 131 filmes, carregadas pela página.
+- `fichas.py` — gera o `fichas.json` usando as funções `cinematecaBusca`/`cinemateca` do OLGA Flux e a API do TMDB. Os casamentos corrigidos à mão ficam em `FORCAR`; os duvidosos saem em `revisar.csv`. As respostas ficam em `cache_cin\` e `cache_tmdb\`.
+- `publicar.ps1` — envia `index.html`, `fichas.json`, `README.md` e `.nojekyll` para o repositório `olgasuite/abraccine`.
