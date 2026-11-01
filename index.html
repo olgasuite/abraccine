@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Comparação entre o ranking dos 100 melhores filmes brasileiros da Abraccine (2015) e a lista dos 100 essenciais (2026).">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Abraccine 2015 × 2026</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single column, summary strip, tabs, one dense table per view */
+:root{
+  --bg:#f6f5f2; --surface:#ffffff; --fg:#1d1c1a; --muted:#6b6862; --line:#e2dfd8; --accent:#b4471f;
+  --keep:#2f6b45; --keep-bg:#e3efe6; --out:#a3322a; --out-bg:#f6e2df; --new:#2a5a8f; --new-bg:#e1eaf5;
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151413; --surface:#1d1c1a; --fg:#ecebe7; --muted:#9d9991; --line:#33312d; --accent:#e0754a;
+  --keep:#7cc493; --keep-bg:#1e3326; --out:#ec8b81; --out-bg:#3a201d; --new:#86b4e8; --new-bg:#1c2b3d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151413; --surface:#1d1c1a; --fg:#ecebe7; --muted:#9d9991; --line:#33312d; --accent:#e0754a;
+  --keep:#7cc493; --keep-bg:#1e3326; --out:#ec8b81; --out-bg:#3a201d; --new:#86b4e8; --new-bg:#1c2b3d; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:960px;margin:0 auto;padding-block:32px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:24px}
+header{display:flex;flex-direction:column;gap:8px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(36px,7vw,60px);line-height:.95;margin:0;text-wrap:balance;text-transform:uppercase}
+.lede{color:var(--muted);max-width:65ch;margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.stat b{font-family:var(--f-display);font-size:36px;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+.stat.keep b{color:var(--keep)} .stat.out b{color:var(--out)} .stat.new b{color:var(--new)}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px;flex-wrap:wrap}
+.tabs button{font:500 13px var(--f-body);border:0;background:transparent;color:var(--muted);padding:7px 12px;border-radius:4px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--fg);color:var(--bg)}
+.tabs button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+input,select{font:14px var(--f-body);padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+input{min-width:0;width:200px}
+.note{font-size:13px;color:var(--muted);margin:0;max-width:75ch}
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{padding:0}
+.sortbtn{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:6px;width:100%;padding:10px 12px;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit}
+.sortbtn:hover{color:var(--fg)}
+.sortbtn.on{color:var(--accent)}
+.sortbtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.arr{font-size:10px;opacity:.55}
+.sortbtn.on .arr{opacity:1}
+td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap;width:1%}
+td.t{font-weight:500}
+td.d{color:var(--muted)}
+tr.section td{background:var(--bg);font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--new);padding:10px 12px}
+.pill{display:inline-block;font:500 12px var(--f-body);padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.keep{background:var(--keep-bg);color:var(--keep)}
+.pill.out{background:var(--out-bg);color:var(--out)}
+.pill.new{background:var(--new-bg);color:var(--new)}
+tr.is-out td.t{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--out)}
+footer{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+footer a{color:var(--muted)}
+@media (max-width:560px){.stats{grid-template-columns:1fr 1fr 1fr}.stat b{font-size:28px}td.d,th.d{display:none}input{width:100%}.filters{width:100%}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Abraccine · Associação Brasileira de Críticos de Cinema</div>
+    <h1>100 Melhores (2015) × 100 Essenciais (2026)</h1>
+    <p class="lede">O ranking de 2015 teve 101 filmes por causa de um empate no último lugar. A lista de 2026 tem 100 títulos e saiu sem classificação, em ordem cronológica, então a comparação é por presença: quem permaneceu, quem saiu e quem entrou.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat keep"><b id="sKeep">71</b><span>permaneceram</span></div>
+    <div class="stat out"><b id="sOut">30</b><span>saíram</span></div>
+    <div class="stat new"><b id="sNew">29</b><span>entraram</span></div>
+  </div>
+
+  <div class="controls">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-cmp" aria-selected="true" data-view="cmp">Comparação</button>
+      <button role="tab" id="tab-15" aria-selected="false" data-view="l15">Lista 2015</button>
+      <button role="tab" id="tab-26" aria-selected="false" data-view="l26">Lista 2026</button>
+      <button role="tab" id="tab-dir" aria-selected="false" data-view="dir">Diretores</button>
+    </div>
+    <div class="filters">
+      <input id="q" type="search" placeholder="Buscar filme ou diretor" aria-label="Buscar filme ou diretor">
+      <select id="st" aria-label="Filtrar por situação">
+        <option value="">Todas as situações</option>
+        <option value="keep">Permaneceu</option>
+        <option value="out">Saiu</option>
+        <option value="new">Entrou</option>
+      </select>
+    </div>
+  </div>
+
+  <p class="note" id="note"></p>
+  <div class="tbl"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+
+  <footer>
+    <span>Fontes: <a href="https://abraccine.org/2015/11/27/abraccine-organiza-ranking-dos-100-melhores-filmes-brasileiros/">ranking de 2015 (abraccine.org)</a> · <a href="https://abraccine.org/2026/05/11/abraccine-elege-100-filmes-brasileiros-essenciais/">lista de 2026 (abraccine.org)</a></span>
+    <span>Ranking de 2015 na versão divulgada em 27/11/2015, com o empate em 100º. A recontagem posterior e o livro de 2016 fizeram pequenos ajustes de ordem que não estão refletidos aqui.</span>
+  </footer>
+</div>
+
+<script>
+const L15=[["Limite",1931,"Mário Peixoto"],["Deus e o Diabo na Terra do Sol",1964,"Glauber Rocha"],["Vidas Secas",1963,"Nelson Pereira dos Santos"],["Cabra Marcado para Morrer",1984,"Eduardo Coutinho"],["Terra em Transe",1967,"Glauber Rocha"],["O Bandido da Luz Vermelha",1968,"Rogério Sganzerla"],["São Paulo S/A",1965,"Luís Sérgio Person"],["Cidade de Deus",2002,"Fernando Meirelles"],["O Pagador de Promessas",1962,"Anselmo Duarte"],["Macunaíma",1969,"Joaquim Pedro de Andrade"],["Central do Brasil",1998,"Walter Salles"],["Pixote, a Lei do Mais Fraco",1981,"Hector Babenco"],["Ilha das Flores",1989,"Jorge Furtado"],["Eles Não Usam Black-Tie",1981,"Leon Hirszman"],["O Som ao Redor",2012,"Kleber Mendonça Filho"],["Lavoura Arcaica",2001,"Luiz Fernando Carvalho"],["Jogo de Cena",2007,"Eduardo Coutinho"],["Bye Bye, Brasil",1979,"Carlos Diegues"],["Assalto ao Trem Pagador",1962,"Roberto Farias"],["São Bernardo",1974,"Leon Hirszman"],["Iracema, uma Transa Amazônica",1975,"Jorge Bodanzky e Orlando Senna"],["Noite Vazia",1964,"Walter Hugo Khouri"],["Os Fuzis",1964,"Ruy Guerra"],["Ganga Bruta",1933,"Humberto Mauro"],["Bang Bang",1971,"Andrea Tonacci"],["A Hora e a Vez de Augusto Matraga",1968,"Roberto Santos"],["Rio, 40 Graus",1955,"Nelson Pereira dos Santos"],["Edifício Master",2002,"Eduardo Coutinho"],["Memórias do Cárcere",1984,"Nelson Pereira dos Santos"],["Tropa de Elite",2007,"José Padilha"],["O Padre e a Moça",1965,"Joaquim Pedro de Andrade"],["Serras da Desordem",2006,"Andrea Tonacci"],["Santiago",2007,"João Moreira Salles"],["O Dragão da Maldade contra o Santo Guerreiro",1969,"Glauber Rocha"],["Tropa de Elite 2 – O Inimigo Agora é Outro",2010,"José Padilha"],["O Invasor",2002,"Beto Brant"],["Todas as Mulheres do Mundo",1967,"Domingos Oliveira"],["Matou a Família e Foi ao Cinema",1969,"Julio Bressane"],["Dona Flor e Seus Dois Maridos",1976,"Bruno Barreto"],["Os Cafajestes",1962,"Ruy Guerra"],["O Homem do Sputnik",1959,"Carlos Manga"],["A Hora da Estrela",1985,"Suzana Amaral"],["Sem Essa, Aranha",1970,"Rogério Sganzerla"],["SuperOutro",1989,"Edgard Navarro"],["Filme Demência",1986,"Carlos Reichenbach"],["À Meia-Noite Levarei Sua Alma",1964,"José Mojica Marins"],["Terra Estrangeira",1996,"Walter Salles e Daniela Thomas"],["A Mulher de Todos",1969,"Rogério Sganzerla"],["Rio, Zona Norte",1957,"Nelson Pereira dos Santos"],["Alma Corsária",1993,"Carlos Reichenbach"],["A Margem",1967,"Ozualdo Candeias"],["Toda Nudez Será Castigada",1973,"Arnaldo Jabor"],["Madame Satã",2000,"Karim Aïnouz"],["A Falecida",1965,"Leon Hirszman"],["O Despertar da Besta – Ritual dos Sádicos",1969,"José Mojica Marins"],["Tudo Bem",1978,"Arnaldo Jabor"],["A Idade da Terra",1980,"Glauber Rocha"],["Abril Despedaçado",2001,"Walter Salles"],["O Grande Momento",1958,"Roberto Santos"],["O Lobo Atrás da Porta",2014,"Fernando Coimbra"],["O Beijo da Mulher-Aranha",1985,"Hector Babenco"],["O Homem que Virou Suco",1980,"João Batista de Andrade"],["O Auto da Compadecida",1999,"Guel Arraes"],["O Cangaceiro",1953,"Lima Barreto"],["A Lira do Delírio",1978,"Walter Lima Jr."],["O Caso dos Irmãos Naves",1967,"Luís Sérgio Person"],["Ônibus 174",2002,"José Padilha"],["O Anjo Nasceu",1969,"Julio Bressane"],["Meu Nome é… Tonho",1969,"Ozualdo Candeias"],["O Céu de Suely",2006,"Karim Aïnouz"],["Que Horas Ela Volta?",2015,"Anna Muylaert"],["Bicho de Sete Cabeças",2001,"Laís Bodanzky"],["Tatuagem",2013,"Hilton Lacerda"],["Estômago",2010,"Marcos Jorge"],["Cinema, Aspirinas e Urubus",2005,"Marcelo Gomes"],["Baile Perfumado",1997,"Paulo Caldas e Lírio Ferreira"],["Pra Frente, Brasil",1982,"Roberto Farias"],["Lúcio Flávio, o Passageiro da Agonia",1976,"Hector Babenco"],["O Viajante",1999,"Paulo Cezar Saraceni"],["Anjos do Arrabalde",1987,"Carlos Reichenbach"],["Mar de Rosas",1977,"Ana Carolina"],["O País de São Saruê",1971,"Vladimir Carvalho"],["A Marvada Carne",1985,"André Klotzel"],["Sargento Getúlio",1983,"Hermano Penna"],["Inocência",1983,"Walter Lima Jr."],["Amarelo Manga",2002,"Cláudio Assis"],["Os Saltimbancos Trapalhões",1981,"J.B. Tanko"],["Di",1977,"Glauber Rocha"],["Os Inconfidentes",1972,"Joaquim Pedro de Andrade"],["Esta Noite Encarnarei no Teu Cadáver",1966,"José Mojica Marins"],["Cabaret Mineiro",1980,"Carlos Alberto Prates Correia"],["Chuvas de Verão",1977,"Carlos Diegues"],["Dois Córregos",1999,"Carlos Reichenbach"],["Aruanda",1960,"Linduarte Noronha"],["Carandiru",2003,"Hector Babenco"],["Blá Blá Blá",1968,"Andrea Tonacci"],["O Signo do Caos",2003,"Rogério Sganzerla"],["O Ano em que Meus Pais Saíram de Férias",2006,"Cao Hamburger"],["Meteorango Kid, Herói Intergaláctico",1969,"André Luiz Oliveira"],["Guerra Conjugal",1975,"Joaquim Pedro de Andrade"],["Bar Esperança, o Último que Fecha",1983,"Hugo Carvana"]];
+// [título, ano, direção, posição em 2015 ou null]
+const L26=[["Limite",1931,"Mário Peixoto",1],["Ganga Bruta",1933,"Humberto Mauro",24],["O Ébrio",1946,"Gilda de Abreu",null],["Também Somos Irmãos",1949,"José Carlos Burle",null],["Carnaval Atlântida",1952,"José Carlos Burle",null],["O Cangaceiro",1953,"Lima Barreto",64],["Rio, 40 Graus",1955,"Nelson Pereira dos Santos",27],["Rio, Zona Norte",1957,"Nelson Pereira dos Santos",49],["O Grande Momento",1958,"Roberto Santos",59],["O Homem do Sputnik",1959,"Carlos Manga",41],["Aruanda",1960,"Linduarte Noronha",94],["O Assalto ao Trem Pagador",1962,"Roberto Farias",19],["O Pagador de Promessas",1962,"Anselmo Duarte",9],["Os Cafajestes",1962,"Ruy Guerra",40],["Porto das Caixas",1962,"Paulo Cezar Saraceni",null],["Vidas Secas",1963,"Nelson Pereira dos Santos",3],["À Meia-Noite Levarei Sua Alma",1964,"José Mojica Marins",46],["A Velha a Fiar",1964,"Humberto Mauro",null],["Deus e o Diabo na Terra do Sol",1964,"Glauber Rocha",2],["Noite Vazia",1964,"Walter Hugo Khouri",22],["Os Fuzis",1964,"Ruy Guerra",23],["A Falecida",1965,"Leon Hirszman",54],["A Hora e Vez de Augusto Matraga",1965,"Roberto Santos",26],["São Paulo Sociedade Anônima",1965,"Luiz Sergio Person",7],["A Entrevista",1966,"Helena Solberg",null],["O Padre e a Moça",1966,"Joaquim Pedro de Andrade",31],["Todas as Mulheres do Mundo",1966,"Domingos de Oliveira",37],["A Margem",1967,"Ozualdo Candeias",51],["Esta Noite Encarnarei no Teu Cadáver",1967,"José Mojica Marins",90],["O Caso dos Irmãos Naves",1967,"Luiz Sergio Person",66],["O Menino e o Vento",1967,"Carlos Hugo Christensen",null],["Terra em Transe",1967,"Glauber Rocha",5],["O Bandido da Luz Vermelha",1968,"Rogério Sganzerla",6],["A Mulher de Todos",1969,"Rogério Sganzerla",48],["Macunaíma",1969,"Joaquim Pedro de Andrade",10],["Matou a Família e Foi ao Cinema",1969,"Julio Bressane",38],["O Dragão da Maldade contra o Santo Guerreiro",1969,"Glauber Rocha",34],["O Despertar da Besta (Ritual dos Sádicos)",1970,"José Mojica Marins",55],["Sem Essa, Aranha",1970,"Rogério Sganzerla",43],["Um é Pouco, Dois é Bom",1970,"Odilon Lopez",null],["Bang Bang",1971,"Andrea Tonacci",25],["S. Bernardo",1972,"Leon Hirszman",20],["Toda Nudez Será Castigada",1972,"Arnaldo Jabor",52],["Alma no Olho",1973,"Zózimo Bulbul",null],["Compasso de Espera",1973,"Antunes Filho",null],["Os Homens que Eu Tive",1973,"Tereza Trautman",null],["A Rainha Diaba",1974,"Antonio Carlos da Fontoura",null],["Iracema, uma Transa Amazônica",1975,"Jorge Bodanzky e Orlando Senna",21],["Dona Flor e Seus Dois Maridos",1976,"Bruno Barreto",39],["Lúcio Flávio, o Passageiro da Agonia",1977,"Hector Babenco",78],["Mar de Rosas",1977,"Ana Carolina",81],["A Lira do Delírio",1978,"Walter Lima Jr.",65],["Tudo Bem",1978,"Arnaldo Jabor",56],["A Mulher que Inventou o Amor",1980,"Jean Garrett",null],["Bye Bye Brasil",1980,"Carlos Diegues",18],["O Homem que Virou Suco",1980,"João Batista de Andrade",62],["Pixote, a Lei do Mais Fraco",1980,"Hector Babenco",12],["Eles Não Usam Black-Tie",1981,"Leon Hirszman",14],["Os Saltimbancos Trapalhões",1981,"J.B. Tanko",87],["Das Tripas Coração",1982,"Ana Carolina",null],["Pra Frente Brasil",1982,"Roberto Farias",77],["Onda Nova",1983,"Ícaro Martins e José Antonio Garcia",null],["Amor Maldito",1984,"Adélia Sampaio",null],["Cabra Marcado para Morrer",1984,"Eduardo Coutinho",4],["Memórias do Cárcere",1984,"Nelson Pereira dos Santos",29],["A Hora da Estrela",1985,"Suzana Amaral",42],["A Marvada Carne",1985,"André Klotzel",83],["Filme Demência",1986,"Carlos Reichenbach",45],["Ilha das Flores",1989,"Jorge Furtado",13],["Que Bom Te Ver Viva",1989,"Lúcia Murat",null],["Superoutro",1989,"Edgard Navarro",44],["Alma Corsária",1993,"Carlos Reichenbach",50],["Carlota Joaquina, Princesa do Brazil",1995,"Carla Camurati",null],["Terra Estrangeira",1995,"Daniela Thomas e Walter Salles",47],["Baile Perfumado",1996,"Lírio Ferreira e Paulo Caldas",76],["Central do Brasil",1998,"Walter Salles",11],["O Auto da Compadecida",2000,"Guel Arraes",63],["Bicho de Sete Cabeças",2001,"Laís Bodanzky",72],["Lavoura Arcaica",2001,"Luiz Fernando Carvalho",16],["Cidade de Deus",2002,"Fernando Meirelles e Kátia Lund",8],["Edifício Master",2002,"Eduardo Coutinho",28],["Madame Satã",2002,"Karim Aïnouz",53],["Cinema, Aspirinas e Urubus",2005,"Marcelo Gomes",75],["O Céu de Suely",2006,"Karim Aïnouz",70],["Serras da Desordem",2006,"Andrea Tonacci",32],["Jogo de Cena",2007,"Eduardo Coutinho",17],["Saneamento Básico, o Filme",2007,"Jorge Furtado",null],["Santiago",2007,"João Moreira Salles",33],["Trabalhar Cansa",2011,"Juliana Rojas e Marco Dutra",null],["O Som ao Redor",2012,"Kleber Mendonça Filho",15],["O Menino e o Mundo",2013,"Alê Abreu",null],["Branco Sai, Preto Fica",2014,"Adirley Queirós",null],["Que Horas Ela Volta?",2015,"Anna Muylaert",71],["Aquarius",2016,"Kleber Mendonça Filho",null],["Arábia",2017,"Affonso Uchoa e João Dumans",null],["As Boas Maneiras",2017,"Juliana Rojas e Marco Dutra",null],["Marte Um",2022,"Gabriel Martins",null],["Mato Seco em Chamas",2022,"Adirley Queirós e Joana Pimenta",null],["Ainda Estou Aqui",2024,"Walter Salles",null],["O Agente Secreto",2025,"Kleber Mendonça Filho",null]];
+
+const kept=new Set(L26.filter(r=>r[3]).map(r=>r[3]));
+const rows15=L15.map((r,i)=>({n:i+1,t:r[0],y:r[1],d:r[2],s:kept.has(i+1)?"keep":"out"}));
+const entered=L26.filter(r=>!r[3]).map(r=>({n:null,t:r[0],y:r[1],d:r[2],s:"new"}));
+document.getElementById("sKeep").textContent=kept.size;
+document.getElementById("sOut").textContent=rows15.length-kept.size;
+document.getElementById("sNew").textContent=entered.length;
+
+const LBL={keep:"Permaneceu",out:"Saiu",new:"Entrou"};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+let view="cmp";
+try{const v=localStorage.getItem("abr-view");if(v)view=v}catch(e){}
+
+const NOTES={
+  cmp:"Os 101 filmes de 2015 na ordem do ranking original, com a situação de cada um em 2026. Os 29 que entraram aparecem no fim, em ordem cronológica.",
+  l15:"Ranking de 2015, do 1º ao 101º (Guerra Conjugal e Bar Esperança empataram em 100º).",
+  l26:"Lista de 2026 na ordem publicada pela Abraccine (cronológica, sem classificação). A coluna 2015 mostra a posição que o filme tinha no ranking anterior.",
+  dir:"Quantos títulos cada diretor tinha em 2015 e quantos tem em 2026. Filmes de codireção contam para cada um dos diretores. Ordenado pelo maior número de títulos em qualquer das duas listas."
+};
+
+// Diretores: separa codireções e unifica grafias diferentes entre as listas
+const dkey=n=>norm(n).replace(/\bluis\b/g,"luiz").replace(/\bsergio\b/g,"sergio").replace(/\bde\b/g," ").replace(/[^a-z ]/g,"").replace(/\s+/g," ").trim();
+const splitD=d=>d.split(/\s+e\s+|,\s*/).map(s=>s.trim()).filter(Boolean);
+const DIRS=(()=>{const m=new Map();
+  const add=(d,col,disp)=>splitD(d).forEach(n=>{const k=dkey(n);if(!m.has(k))m.set(k,{name:n,a:0,b:0});const o=m.get(k);o[col]++;if(disp)o.name=n});
+  L15.forEach(r=>add(r[2],"a",false));
+  L26.forEach(r=>add(r[2],"b",true));
+  return [...m.values()].sort((x,y)=>Math.max(y.a,y.b)-Math.max(x.a,x.b)||y.a-x.a||x.name.localeCompare(y.name,"pt"));
+})();
+
+const SORD={keep:0,out:1,new:2};
+const pill=s=>`<span class="pill ${s}">${LBL[s]}</span>`;
+const rank15=n=>n?(n===101?"100º*":n+"º"):"—";
+const deltaPill=dv=>`<span class="pill ${dv>0?"new":dv<0?"out":"keep"}">${dv>0?"+"+dv:dv<0?"−"+(-dv):"="}</span>`;
+const C={
+  r15:{label:"2015",cls:"n",v:r=>r.n,h:r=>rank15(r.n)},
+  t:{label:"Filme",cls:"t",v:r=>r.t,h:r=>esc(r.t)},
+  y:{label:"Ano",cls:"n",v:r=>r.y,h:r=>r.y},
+  d:{label:"Direção",cls:"d",v:r=>r.d,h:r=>esc(r.d)},
+  s:{label:"Situação",cls:"",v:r=>SORD[r.s],h:r=>pill(r.s)},
+  i26:{label:"#",cls:"n",v:r=>r.i,h:r=>r.i},
+  nm:{label:"Diretor",cls:"t",v:r=>r.name,h:r=>esc(r.name)},
+  a:{label:"2015",cls:"n",v:r=>r.a,h:r=>r.a},
+  b:{label:"2026",cls:"n",v:r=>r.b,h:r=>r.b},
+  dv:{label:"Variação",cls:"",v:r=>r.b-r.a,h:r=>deltaPill(r.b-r.a)}
+};
+const rows26=L26.map((r,i)=>({i:i+1,t:r[0],y:r[1],d:r[2],n:r[3],s:r[3]?"keep":"new"}));
+const VIEWS={
+  cmp:{cols:["r15","t","y","d","s"],rows:()=>rows15.concat(entered)},
+  l15:{cols:["r15","t","y","d","s"],rows:()=>rows15},
+  l26:{cols:["i26","t","y","d","r15","s"],rows:()=>rows26},
+  dir:{cols:["nm","a","b","dv"],rows:()=>DIRS}
+};
+let sort={k:null,dir:1};
+function cmpVals(a,b){
+  const an=a==null,bn=b==null;if(an||bn)return an&&bn?0:an?1:-1;
+  return typeof a==="string"?a.localeCompare(b,"pt",{sensitivity:"base"})*sort.dir:(a-b)*sort.dir;
+}
+function render(){
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===view));
+  document.getElementById("note").textContent=NOTES[view];
+  const q=norm(document.getElementById("q").value.trim());
+  const stEl=document.getElementById("st");stEl.hidden=(view==="dir");
+  const st=view==="dir"?"":stEl.value;
+  const V=VIEWS[view];
+  const ok=r=>(!st||r.s===st)&&(!q||norm(view==="dir"?r.name:r.t+" "+r.d).includes(q));
+  let rows=V.rows().filter(ok);
+  if(sort.k){const f=C[sort.k].v;rows=rows.slice().sort((x,y)=>cmpVals(f(x),f(y))||cmpVals(x.t||x.name,y.t||y.name)*sort.dir)}
+  document.getElementById("thead").innerHTML="<tr>"+V.cols.map(k=>{const c=C[k],on=sort.k===k;
+    const lab=(view!=="dir"&&k==="s"&&view!=="l26")?"Situação em 2026":c.label;
+    return `<th class="${k==="d"?"d":""}" aria-sort="${on?(sort.dir>0?"ascending":"descending"):"none"}"><button class="sortbtn${on?" on":""}" data-k="${k}">${lab}<span class="arr">${on?(sort.dir>0?"▲":"▼"):"↕"}</span></button></th>`}).join("")+"</tr>";
+  const row=r=>`<tr class="is-${r.s||""}">`+V.cols.map(k=>`<td class="${C[k].cls}">${C[k].h(r)}</td>`).join("")+"</tr>";
+  let h="";
+  if(view==="cmp"&&!sort.k){
+    rows.filter(r=>r.s!=="new").forEach(r=>h+=row(r));
+    const e=rows.filter(r=>r.s==="new");if(e.length){h+=`<tr class="section"><td colspan="5">Entraram em 2026</td></tr>`;e.forEach(r=>h+=row(r))}
+  }else rows.forEach(r=>h+=row(r));
+  document.getElementById("tbody").innerHTML=h||`<tr><td colspan="${V.cols.length}" class="d">Nada encontrado com esses filtros.</td></tr>`;
+}
+document.getElementById("thead").addEventListener("click",e=>{const b=e.target.closest(".sortbtn");if(!b)return;const k=b.dataset.k;
+  if(sort.k!==k)sort={k,dir:(["a","b","dv"].includes(k))?-1:1};
+  else if((["a","b","dv"].includes(k)&&sort.dir===-1)||(!["a","b","dv"].includes(k)&&sort.dir===1))sort.dir*=-1;
+  else sort={k:null,dir:1};
+  render()});
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{view=b.dataset.view;sort={k:null,dir:1};try{localStorage.setItem("abr-view",view)}catch(e){}render()}));
+document.getElementById("q").addEventListener("input",render);
+document.getElementById("st").addEventListener("change",render);
+render();
+</script>
+
+</body>
+</html>
