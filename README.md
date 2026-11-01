@@ -21,7 +21,7 @@ Todas as colunas podem ser ordenadas com um clique no título (1º clique ordena
 ## Números
 
 - 71 filmes permaneceram
-- 30 saíram
+- 31 saíram (30 da lista divulgada + *O Palhaço*, da recontagem)
 - 29 entraram
 
 Como a lista de 2026 não é um ranking, não há como medir quantas posições cada filme subiu ou caiu; a comparação é por presença.
@@ -29,7 +29,7 @@ Como a lista de 2026 não é um ranking, não há como medir quantas posições 
 ## Critérios
 
 - Ranking de 2015 na versão divulgada pela Abraccine em 27/11/2015, com *Guerra Conjugal* e *Bar Esperança* empatados em 100º (marcados com *).
-- A recontagem posterior dos votos colocou *O Palhaço* (2011, Selton Mello) em 97º; os filmes seguintes desceram uma posição e os dois empatados em 100º saíram. *O Palhaço* aparece no fim da lista de 2015 marcado com ** e não entra nas contagens (71 / 30 / 29), que seguem a lista divulgada.
+- A recontagem posterior dos votos colocou *O Palhaço* (2011, Selton Mello) em 97º; os filmes seguintes desceram uma posição e os dois empatados em 100º saíram. *O Palhaço* aparece no fim da lista de 2015 marcado com ** e entra nas contagens (71 permaneceram / 31 saíram / 29 entraram) e na aba Diretores.
 - Na contagem por diretor, filmes de codireção contam para cada um dos diretores.
 - Grafias diferentes do mesmo nome entre as duas listas foram unificadas (ex.: Luís Sérgio Person / Luiz Sergio Person, Domingos Oliveira / Domingos de Oliveira).
 
