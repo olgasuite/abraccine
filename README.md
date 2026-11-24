@@ -1,5 +1,8 @@
 # Abraccine 2015 × 2026
 
+<!-- aviso-ia -->
+> **Feito com IA.** O código deste repositório foi escrito pelo **Claude Code** (inteligência artificial da Anthropic), a partir das especificações, dos testes e da revisão do autor. Leia antes de usar, como faria com qualquer código.
+
 Comparação entre as duas listas de filmes brasileiros da Abraccine (Associação Brasileira de Críticos de Cinema):
 
 - **Os 100 Melhores Filmes Brasileiros** (2015) — ranking com 101 títulos, por causa de um empate no 100º lugar.
