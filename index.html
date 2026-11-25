@@ -282,7 +282,9 @@ async function abrirFicha(k){
 }
 document.getElementById("tbody").addEventListener("click",e=>{const b=e.target.closest(".tl");if(b)abrirFicha(b.dataset.f)});
 document.getElementById("fxClose").addEventListener("click",()=>fxDlg.close());
-fxDlg.addEventListener("click",e=>{if(e.target===fxDlg)fxDlg.close()});
+// fecha no fundo só se o clique começou no fundo (arrastar seleção de texto pra fora não fecha)
+fxDlg.addEventListener("pointerdown",e=>{fxDlg._desdeFundo=(e.target===fxDlg)});
+fxDlg.addEventListener("click",e=>{if(e.target===fxDlg&&fxDlg._desdeFundo)fxDlg.close()});
 
 document.getElementById("q").addEventListener("input",render);
 document.getElementById("st").addEventListener("change",render);
